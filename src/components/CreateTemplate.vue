@@ -34,7 +34,7 @@
         <input
           type="text"
           class="form-control"
-          v-model="template.header_item_attributes.banner_text"
+          v-model="template.header_item.banner_text"
           @blur="validateBannerText"
           _t
           :class="{ 'is-invalid': bannerTextError }"
@@ -48,7 +48,7 @@
         <input
           type="text"
           class="form-control"
-          v-model="template.header_item_attributes.banner_image_link"
+          v-model="template.header_item.banner_image_link"
         />
         <div class="invalid-feedback" v-if="bannerImageError">
           {{ bannerImageError }}
@@ -56,10 +56,7 @@
       </div>
       <div class="form-group">
         <label>Titles and Descriptions</label>
-        <div
-          v-for="(item, index) in template.footer_items_attributes"
-          :key="index"
-        >
+        <div v-for="(item, index) in template.footer_items" :key="index">
           <div class="form-group">
             <label>Title</label>
             <input
@@ -79,7 +76,6 @@
               v-model="item.description"
               :editorToolbar="customToolbar"
             ></vue-editor>
-            <!-- <Editor theme="snow" toolbar="minimal" /> -->
             <div class="invalid-feedback" v-if="item.descriptionError">
               {{ item.descriptionError }}
             </div>
@@ -89,33 +85,33 @@
           + Add Another
         </button>
       </div>
-      <button type="submit" class="btn btn-primary">Submit</button>
+
+      <button type="submit" class="mt-1 btn btn-primary">
+        {{ createOrEdit }}
+      </button>
     </form>
   </div>
 </template>
 <script>
-import { VueEditor } from "vue3-editor";
 import axios from "axios";
+import { mapActions } from "vuex";
 export default {
-  components: {
-    VueEditor,
-  },
   data() {
     return {
       template: {
         name: "",
-        header_item_attributes: {
+        header_item: {
           banner_text: "",
           banner_image_link: "",
         },
-        footer_items_attributes: [
+        footer_items: [
           {
             heading: "",
             description: "",
           },
         ],
       },
-
+      isEdit: false,
       bannerType: "text",
       bannerText: "",
       bannerTextError: "",
@@ -124,7 +120,29 @@ export default {
       customToolbar: [[{ list: "ordered" }, { list: "bullet" }]],
     };
   },
+  mounted() {
+    if (this.$route.params.id) {
+      this.isEdit = true;
+      this.getTemplate();
+    }
+  },
+  computed: {
+    createOrEdit() {
+      return this.isEdit ? "Edit Template" : "Create Template";
+    },
+  },
   methods: {
+    ...mapActions(["CREATE_TEMPLATE", "UPDATE_TEMPLATE"]),
+    getTemplate() {
+      axios
+        .get(`/api/templates/${this.$route.params.id}`)
+        .then((response) => {
+          this.template = response.data;
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
     validateBannerText() {
       if (!this.bannerText) {
         // this.bannerTextError = "Please enter a banner text.";
@@ -160,21 +178,26 @@ export default {
       }
     },
     addTitlePair() {
-      this.template.footer_items_attributes.push({
+      this.template.footer_items.push({
         heading: "",
-        // headingError: "",
         description: "",
-        // descriptionError: "",
       });
     },
     submitData() {
-      axios
-        .post("/api/templates", this.template)
-        .then((response) => {
-          console.log(response);
-        })
-        .catch((error) => {
-          console.log(error);
+      let payload = {
+        name: this.template.name,
+        header_item_attributes: this.template.header_item,
+        footer_items_attributes: this.template.footer_items,
+      };
+      if (this.$route.params.id)
+        this.UPDATE_TEMPLATE({ id: this.$route.params.id, payload }).then(
+          () => {
+            this.$router.push("/my-templates");
+          }
+        );
+      else
+        this.CREATE_TEMPLATE(payload).then(() => {
+          this.$router.push("/my-templates");
         });
     },
   },
