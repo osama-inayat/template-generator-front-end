@@ -135,7 +135,9 @@ export default {
     ...mapActions(["CREATE_TEMPLATE", "UPDATE_TEMPLATE"]),
     getTemplate() {
       axios
-        .get(`/api/templates/${this.$route.params.id}`)
+        .get(
+          `https://plankton-app-datju.ondigitalocean.app/templates/${this.$route.params.id}`
+        )
         .then((response) => {
           this.template = response.data;
         })
