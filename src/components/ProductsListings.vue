@@ -1,6 +1,10 @@
 <template>
   <div class="row">
+    <div v-if="loading">
+      <OurLoader />
+    </div>
     <div
+      v-else
       class="col-4 job-card h-50"
       v-for="bodyItem in filteredTemplate.body_items"
       :key="bodyItem.id"
@@ -18,7 +22,7 @@ import PreviewTemplate from "./PreviewTemplate.vue";
 export default {
   components: { PreviewTemplate },
   computed: {
-    ...mapState(["templates"]),
+    ...mapState(["templates", "loading"]),
     filteredTemplate() {
       return this.templates.find(({ id }) => id == this.$route.params.id) || {};
     },

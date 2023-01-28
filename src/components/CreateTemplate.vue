@@ -1,5 +1,8 @@
 <template>
   <div class="container">
+    <div v-if="meLoading || loading">
+      <OurLoader />
+    </div>
     <form @submit.prevent="submitData">
       <div class="form-group">
         <label>Give this a name</label>
@@ -94,7 +97,8 @@
 </template>
 <script>
 import axios from "axios";
-import { mapActions } from "vuex";
+import { mapActions, mapState } from "vuex";
+
 export default {
   data() {
     return {
@@ -118,6 +122,7 @@ export default {
       bannerImage: "",
       bannerImageError: "",
       customToolbar: [[{ list: "ordered" }, { list: "bullet" }]],
+      meLoading: false,
     };
   },
   mounted() {
@@ -127,6 +132,7 @@ export default {
     }
   },
   computed: {
+    ...mapState(["loading"]),
     createOrEdit() {
       return this.isEdit ? "Edit Template" : "Create Template";
     },
@@ -134,6 +140,7 @@ export default {
   methods: {
     ...mapActions(["CREATE_TEMPLATE", "UPDATE_TEMPLATE"]),
     getTemplate() {
+      this.meLoading = true;
       axios
         .get(
           `https://plankton-app-datju.ondigitalocean.app/templates/${this.$route.params.id}`
@@ -143,6 +150,9 @@ export default {
         })
         .catch((error) => {
           console.log(error);
+        })
+        .finally(() => {
+          this.meLoading = false;
         });
     },
     validateBannerText() {

@@ -1,6 +1,9 @@
 <template>
   <div class="container">
-    <form @submit.prevent="submitForm">
+    <div v-if="loading">
+      <OurLoader />
+    </div>
+    <form v-else @submit.prevent="submitForm">
       <div class="form-group">
         <label for="title">Title</label>
         <input type="text" class="form-control" id="title" v-model="title" />
@@ -34,6 +37,7 @@ import axios from "axios";
 export default {
   data() {
     return {
+      loading: false,
       title: "",
       description: "",
       image_link: "",
@@ -48,8 +52,9 @@ export default {
         this.image_link !== ""
       ) {
         // send data to server or do something else
+        this.loading = true;
         axios
-          .post("/api/body_items", {
+          .post("https://plankton-app-datju.ondigitalocean.app/body_items", {
             title: this.title,
             description: this.description,
             image_link: this.image_link,
@@ -63,6 +68,9 @@ export default {
           })
           .catch((error) => {
             console.log(error);
+          })
+          .finally(() => {
+            this.loading = false;
           });
       } else {
         alert("Please fill in all fields.");

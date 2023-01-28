@@ -1,5 +1,8 @@
 <template>
   <div class="templates-list">
+    <div v-if="loading">
+      <OurLoader />
+    </div>
     <div class="wrapper">
       <h1>Templates</h1>
       <table class="table">
@@ -61,7 +64,7 @@
 import { mapState, mapActions } from "vuex";
 export default {
   computed: {
-    ...mapState(["templates"]),
+    ...mapState(["templates", "loading"]),
   },
   methods: {
     ...mapActions(["DELETE_TEMPLATE"]),

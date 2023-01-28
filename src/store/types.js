@@ -5,3 +5,4 @@ export const FETCH_TEMPLATES = "FETCH_TEMPLATES";
 export const ADD_ITEM = "ADD_ITEM";
 export const SET_TEMPLATES = "SET_TEMPLATES";
 export const FETCH_TEMPLATE = "FETCH_TEMPLATE";
+export const SET_LOADING = "SET_LOADING";

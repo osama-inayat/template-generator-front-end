@@ -1,6 +1,9 @@
 <template>
   <div ref="my-ref">
-    <div class="container">
+    <div v-if="loading">
+      <OurLoader />
+    </div>
+    <div v-else class="container">
       <header class="text-center">
         <img
           :src="template.header_item.banner_image_link"
@@ -35,7 +38,7 @@
   <textarea :value="valueItem" col="40"></textarea>
 </template>
 <script>
-// import { mapState } from "vuex";
+import { mapState } from "vuex";
 export default {
   data() {
     return {
@@ -51,6 +54,9 @@ export default {
       type: Object,
       required: true,
     },
+  },
+  computed: {
+    ...mapState(["loading"]),
   },
   mounted() {
     // this.valueItem = this.$refs["my-ref"].innerHTML;
