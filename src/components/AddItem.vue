@@ -55,8 +55,11 @@ export default {
             image_link: this.image_link,
             template_id: this.$route.params.id,
           })
-          .then((response) => {
-            console.log(response);
+          .then(() => {
+            alert("Successfully added body item.");
+            this.$router.push(
+              `/template/${this.$route.params.id}/all-listings`
+            );
           })
           .catch((error) => {
             console.log(error);
