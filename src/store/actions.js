@@ -15,9 +15,13 @@ export default {
   },
 
   [Types.DELETE_TEMPLATE]: (context, payload) => {
-    axios.delete("/api/templates/" + payload.id).then(({ data }) => {
-      context.commit(Types.SET_TEMPLATES, data);
-    });
+    axios
+      .delete(
+        "https://plankton-app-datju.ondigitalocean.app/templates/" + payload.id
+      )
+      .then(({ data }) => {
+        context.commit(Types.SET_TEMPLATES, data);
+      });
   },
   [Types.FETCH_TEMPLATES]: (context) => {
     axios
