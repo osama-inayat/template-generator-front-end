@@ -8,7 +8,7 @@ export default defineConfig({
   server: {
     proxy: {
       "/api": {
-        target: "http://localhost:3000/",
+        target: "https://plankton-app-datju.ondigitalocean.app/",
         ws: true,
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, ""),
