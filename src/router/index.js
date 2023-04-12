@@ -21,7 +21,7 @@ const router = createRouter({
       component: () => import("../views/AboutView.vue"),
     },
     {
-      path: "/my-templates",
+      path: "/my-templates ",
       name: "my-templates",
       // route level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route
